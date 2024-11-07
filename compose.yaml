@@ -1,12 +1,12 @@
-version: "3.8"
 services:
-  immo_auth:
+  immo-authentification-server:
     restart: on-failure
+    container_name: immo-authentification-server
     build: .
     ports:
       - 8080:8080
     environment:
-      MYSQL_DATABASE: micro_auth_db
+      MYSQL_DATABASE: immo_auth_db
       MYSQL_PASSWORD: admin
       MYSQL_ROOT_PASSWORD: admin
       MYSQL_USER: admin
@@ -15,18 +15,28 @@ services:
       - database
     volumes:
       - .m2:/root/.m2
+    networks:
+      - immo-network
+
   database:
     image: 'mysql:latest'
+    container_name: immo-authentification-db
     restart: always
     ports:
       - 3306:3306
     volumes:
       - data_db:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: micro_auth_db
+      MYSQL_DATABASE: immo_auth_db
       MYSQL_USER: admin
       MYSQL_PASSWORD: admin
       MYSQL_ROOT_PASSWORD: admin
+    networks:
+      - immo-network
 
 volumes:
   data_db: {}
+
+networks:
+  immo-network:
+    external: true

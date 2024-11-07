@@ -8,7 +8,7 @@ RUN mvn clean package -DskipTests
 # Étape de run
 FROM eclipse-temurin:21-alpine
 WORKDIR /app
-COPY --from=build /home/immo/authentification/target/*.jar /app/authentification.jar
+COPY --from=build /home/immo/authentification/target/*.jar /app/immo-authentification-server.jar
 
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","authentification.jar"]
+ENTRYPOINT ["java","-jar","immo-authentification-server.jar"]
