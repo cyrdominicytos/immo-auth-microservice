@@ -79,19 +79,6 @@ public class SecurityConfig {
         RSAPublicKey publicKey = (RSAPublicKey) keyStore.getCertificate(CERTIFICATION_KEY).getPublicKey();
         RSAPrivateKey privateKey = (RSAPrivateKey) keyStore.getKey(CERTIFICATION_KEY, keyStorePassword.toCharArray());
         return  new RSAKey.Builder(publicKey).privateKey(privateKey).keyID(CERTIFICATION_KEY).build();
-
     }
 
-    /*@Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-
-                .securityMatcher("/**")
-                .authorizeHttpRequests(
-                        registry ->
-                                registry.requestMatchers("/").permitAll()
-                                        .anyRequest().authenticated()
-                );
-        return http.build();
-    }*/
 }

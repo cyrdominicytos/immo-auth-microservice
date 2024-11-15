@@ -1,8 +1,14 @@
 package cyr.tos.microauthentification.web.service;
 
 import cyr.tos.microauthentification.web.dao.UserEntityRepository;
+import cyr.tos.microauthentification.web.externalApi.UserAccountApi;
 import cyr.tos.microauthentification.web.model.UserEntity;
+import cyr.tos.microauthentification.web.service.external.UserAccountService;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -30,6 +36,8 @@ public class AuthService {
     @Autowired
     AuthenticationManager authenticationManager;
 
+    @Autowired
+    UserAccountService userAccountService;
     public static final Long AUTH_EXPIRATION_DURATION = 3600L;
 
     public String register(UserEntity user) {
@@ -41,7 +49,14 @@ public class AuthService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole("ROLE_USER");
         userEntityRepository.save(user);
-        return "User registered successfully";
+
+        // Create User Profil in : UserAccount microservice
+        ResponseEntity<String> response =  userAccountService.createUserAccount(user.getId());
+        if (response.getStatusCode() == HttpStatus.OK) {
+            return "User registered successfully";
+        } else {
+            return "User registered successfully, but failed to create external account: " + response.getStatusCode();
+        }
     }
 
     public Map<String, Object> login(String username, String password) {

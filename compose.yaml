@@ -23,7 +23,7 @@ services:
     container_name: immo-authentification-db
     restart: always
     ports:
-      - 3306:3306
+      - 3307:3307
     volumes:
       - data_db:/var/lib/mysql
     environment:
